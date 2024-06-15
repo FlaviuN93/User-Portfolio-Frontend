@@ -56,7 +56,10 @@ const CoverForm = () => {
 		if (coverFile && isImageSelected) setCoverUrl(coverFile)
 	}, [getValues().coverFile, loggedUser.coverURL, isImageSelected])
 
-	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
+	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+		console.log(croppedArea)
+		setCroppedAreaPixels(croppedAreaPixels)
+	}
 
 	const submitCoverFile: SubmitHandler<{ coverFile: File | null }> = async (data) => {
 		if (!data.coverFile) {
@@ -83,7 +86,7 @@ const CoverForm = () => {
 					<h2 className='dark:text-light text-black3'>Add cover photo</h2>
 					<Divider />
 					<div className='flex justify-center mb-2'>
-						<img src={addCoverImage} className=' w-full mobile:w-3/4 md:w-2/3' alt='Cover' />
+						<img src={addCoverImage[0]} className=' w-full mobile:w-3/4 md:w-2/3' alt='Cover' />
 					</div>
 					<p className='text-center mb-2 text-lg font-medium dark:text-light3 text-black3'>
 						Showcase your personality, interests, values or notable milestones{' '}

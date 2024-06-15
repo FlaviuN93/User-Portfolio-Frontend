@@ -57,7 +57,10 @@ const AvatarForm = () => {
 		if (avatarFile && isImageSelected) setAvatarUrl(avatarFile)
 	}, [getValues().avatarFile, loggedUser.avatarURL, isImageSelected])
 
-	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
+	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
+		console.log(croppedArea)
+		setCroppedAreaPixels(croppedAreaPixels)
+	}
 
 	const submitAvatarFile: SubmitHandler<{ avatarFile: File | null }> = async (data) => {
 		if (!data.avatarFile) {
