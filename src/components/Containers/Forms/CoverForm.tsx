@@ -37,11 +37,11 @@ const CoverForm = () => {
 	const [isEmpty, setIsEmpty] = useState(false)
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
 	const [isImageSelected, setIsImageSelected] = useState(false)
-	const { close } = useModalContext()
 
-	const { isPending, isSuccess, data, mutate: updateCover } = useUpdateMyCover()
-
+	const isDisabled = !!errors.coverFile?.message
 	const coverFile = getValues().coverFile && !errors.coverFile ? URL.createObjectURL(getValues().coverFile as File) : null
+	const { close } = useModalContext()
+	const { isPending, isSuccess, data, mutate: updateCover } = useUpdateMyCover()
 
 	useEffect(() => {
 		if (isSuccess && !isPending) {
@@ -71,11 +71,9 @@ const CoverForm = () => {
 		}
 
 		const formData = new FormData()
-		if (zoom > 1) {
-			const croppedFile = await getCroppedImg(coverUrl, croppedAreaPixels)
-			if (!croppedFile) return setError('coverFile', { message: 'There was an error cropping the image. Please try again.' })
-			formData.append('coverFile', croppedFile)
-		} else formData.append('coverFile', data.coverFile)
+		const croppedFile = await getCroppedImg(coverUrl, croppedAreaPixels)
+		if (!croppedFile) return setError('coverFile', { message: 'There was an error cropping the image. Please try again.' })
+		formData.append('coverFile', croppedFile)
 
 		updateCover(formData)
 	}
@@ -167,9 +165,9 @@ const CoverForm = () => {
 								icon={<CheckIcon className='h-5 w-5' />}
 								buttonText='Apply'
 								isLoading={isPending}
-								disabled={!!errors.coverFile?.message}
+								disabled={isDisabled}
 								variant='primary'
-								buttonStyles={isEmpty ? 'opacity-75 transition-opacity duration-300' : 'opacity-100'}
+								buttonStyles={isEmpty || isDisabled ? 'opacity-75 transition-opacity duration-300' : 'opacity-100'}
 								type='submit'
 							/>
 						</div>

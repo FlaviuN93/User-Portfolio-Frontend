@@ -72,11 +72,9 @@ const AvatarForm = () => {
 		}
 
 		const formData = new FormData()
-		if (zoom > 1) {
-			const croppedFile = await getCroppedImg(avatarUrl, croppedAreaPixels)
-			if (!croppedFile) return setError('avatarFile', { message: 'There was an error cropping the image. Please try again.' })
-			formData.append('avatarFile', croppedFile)
-		} else formData.append('avatarFile', data.avatarFile)
+		const croppedFile = await getCroppedImg(avatarUrl, croppedAreaPixels)
+		if (!croppedFile) return setError('avatarFile', { message: 'There was an error cropping the image. Please try again.' })
+		formData.append('avatarFile', croppedFile)
 
 		updateAvatar(formData)
 	}
