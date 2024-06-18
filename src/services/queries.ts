@@ -1,6 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
 import {
-	changePassword,
 	checkResetToken,
 	contactUs,
 	createMyProject,
@@ -22,11 +21,12 @@ import {
 	updateMyAvatar,
 	updateMyCover,
 	updateMyProject,
+	updatePassword,
 } from './api.requests'
 import { IDefaultError, IDefaultSuccess, Technology, IUser, Project, User, ICover, IAvatar, MessageUs, IRegisteredUser } from './types'
 import { IProfileSettings, LoginType, ResetPasswordType, SignupType } from '../utils/schemas'
 import { queryClient } from './queryClient'
-import { updateValueFromStorage } from '../utils/functions'
+import { updateObjectFromStorage } from '../utils/functions'
 
 // User Queries and Mutations
 export const useGetMyUserId = () => useQuery<string, IDefaultError>({ queryKey: ['getMyUserId'], queryFn: getMyUserId })
@@ -36,7 +36,6 @@ export const useUpdateMe = () =>
 		mutationFn: updateMe,
 	})
 
-// export const useUpdateMyPortfolio = () => useMutation<IUser, IDefaultError, FormData>({ mutationFn: updateMyPortfolio })
 export const useUpdateMyCover = () => useMutation<ICover, IDefaultError, FormData>({ mutationFn: updateMyCover })
 export const useUpdateMyAvatar = () => useMutation<IAvatar, IDefaultError, FormData>({ mutationFn: updateMyAvatar })
 
@@ -44,14 +43,14 @@ export const useDeleteMyCover = () =>
 	useMutation<IDefaultSuccess, IDefaultError>({
 		mutationFn: deleteMyCover,
 		onSuccess: () => {
-			updateValueFromStorage({ key: 'user', keyToUpdate: 'coverURL', valueToUpdate: '' })
+			updateObjectFromStorage({ storageKey: 'user', objectKey: 'coverURL', valueToUpdate: '' })
 		},
 	})
 export const useDeleteMyAvatar = () =>
 	useMutation<IDefaultSuccess, IDefaultError>({
 		mutationFn: deleteMyAvatar,
 		onSuccess: () => {
-			updateValueFromStorage({ key: 'user', keyToUpdate: 'avatarURL', valueToUpdate: '' })
+			updateObjectFromStorage({ storageKey: 'user', objectKey: 'avatarURL', valueToUpdate: '' })
 		},
 	})
 
@@ -69,8 +68,6 @@ export const useGetUserAndProjects = (userId: string) =>
 		queryFn: () => getUserAndProjects(userId),
 	})
 
-export const useChangePassword = () => useMutation<IUser, IDefaultError, ResetPasswordType>({ mutationFn: changePassword })
-
 //Project Queries and Mutations
 
 export const useGetMyProjects = () =>
@@ -83,7 +80,7 @@ export const useGetMyProject = (projectId: number) =>
 	useQuery<Project, IDefaultError>({
 		queryKey: ['myProject', projectId],
 		queryFn: () => getMyProject(projectId),
-		enabled: false,
+		enabled: !!projectId,
 	})
 
 export const useCreateMyProject = () =>
@@ -135,10 +132,13 @@ export const useResetPassword = (resetToken: string | undefined) =>
 	useMutation<IDefaultSuccess, IDefaultError, ResetPasswordType>({
 		mutationFn: (body) => resetPassword(resetToken, body),
 	})
-export const useCheckResetToken = (resetToken: string | undefined) =>
-	useQuery<undefined, IDefaultError>({ queryKey: ['resetToken'], queryFn: () => checkResetToken(resetToken), enabled: true })
+
+export const useCheckResetToken = () =>
+	useMutation<string, IDefaultError, string>({ mutationFn: (resetToken) => checkResetToken(resetToken) })
 
 export const useContactUs = () =>
 	useMutation<IDefaultSuccess, IDefaultError, MessageUs>({
 		mutationFn: contactUs,
 	})
+
+export const useUpdatePassword = () => useMutation<IDefaultSuccess, IDefaultError, ResetPasswordType>({ mutationFn: updatePassword })

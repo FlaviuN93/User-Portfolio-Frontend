@@ -36,15 +36,16 @@ export const getTechnologies = () => get<Technology[]>('/projects/currentUser/te
 
 // Authentication Routes
 export const register = (body: SignupType) => post<IRegisteredUser, SignupType>('/auth/register', { body })
-
 export const login = (body: LoginType) => post<IUser, LoginType>('/auth/login', { body })
+export const updatePassword = (body: ResetPasswordType) => post<IDefaultSuccess, ResetPasswordType>('/auth/updatePassword', { body })
+export const getRefreshToken = () => get<{ token: string }>('/auth/refreshToken')
+
 export const logout = () => post<IDefaultSuccess>('/auth/logout')
 export const forgotPassword = (body: { email: string }) => post<IDefaultSuccess, { email: string }>('/auth/forgotPassword', { body })
 
 export const resetPassword = (resetToken: string | undefined, body: ResetPasswordType) =>
 	patch<IDefaultSuccess, ResetPasswordType>(`/auth/resetPassword/${resetToken}`, { body })
 
-export const checkResetToken = (resetToken: string | undefined) => get<undefined>(`/auth/resetPassword/${resetToken}`)
+export const checkResetToken = (resetToken: string) => post<string>(`/auth/resetPassword/${resetToken}`)
 
-export const changePassword = (body: ResetPasswordType) => post<IUser, ResetPasswordType>('/auth/changePassword', { body })
 export const contactUs = (body: MessageUs) => post<IDefaultSuccess, MessageUs>('/auth/contactUs', { body })

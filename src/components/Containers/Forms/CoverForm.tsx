@@ -37,29 +37,19 @@ const CoverForm = () => {
 	const [isEmpty, setIsEmpty] = useState(false)
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
 	const [isImageSelected, setIsImageSelected] = useState(false)
-
-	const isDisabled = !!errors.coverFile?.message
-	const coverFile = getValues().coverFile && !errors.coverFile ? URL.createObjectURL(getValues().coverFile as File) : null
 	const { close } = useModalContext()
-	const { isPending, isSuccess, data, mutate: updateCover } = useUpdateMyCover()
 
-	useEffect(() => {
-		if (isSuccess && !isPending) {
-			setCover(data.coverURL)
-			setIsImageSelected(false)
-			close()
-		}
-	}, [data?.coverURL, isPending, isSuccess, close])
+	const { isPending, mutate: updateCover } = useUpdateMyCover()
+
+	const coverFile = getValues().coverFile && !errors.coverFile ? URL.createObjectURL(getValues().coverFile as File) : null
+	const isDisabled = !!errors.coverFile?.message
 
 	useEffect(() => {
 		if (loggedUser.coverURL && !isImageSelected) setCoverUrl(loggedUser.coverURL)
 		if (coverFile && isImageSelected) setCoverUrl(coverFile)
 	}, [getValues().coverFile, loggedUser.coverURL, isImageSelected])
 
-	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => {
-		console.log(croppedArea)
-		setCroppedAreaPixels(croppedAreaPixels)
-	}
+	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
 
 	const submitCoverFile: SubmitHandler<{ coverFile: File | null }> = async (data) => {
 		if (!data.coverFile) {
@@ -72,10 +62,16 @@ const CoverForm = () => {
 
 		const formData = new FormData()
 		const croppedFile = await getCroppedImg(coverUrl, croppedAreaPixels)
-		if (!croppedFile) return setError('coverFile', { message: 'There was an error cropping the image. Please try again.' })
+		if (!croppedFile) return setError('coverFile', { message: 'There was an error cropping the image. Please try a different image.' })
 		formData.append('coverFile', croppedFile)
 
-		updateCover(formData)
+		updateCover(formData, {
+			onSuccess: (data) => {
+				setCover(data.coverURL)
+				setIsImageSelected(false)
+				close()
+			},
+		})
 	}
 	return (
 		<form onSubmit={handleSubmit(submitCoverFile)}>

@@ -7,8 +7,7 @@ import Text from '../components/Inputs/Text'
 import Password from '../components/Inputs/Password'
 import { useLogin } from '../services/queries'
 import { useEffect } from 'react'
-import { useUserContext } from '../contexts/contextHooks'
-import { BiLogoGithub } from 'react-icons/bi'
+import { useAuthContext, useUserContext } from '../contexts/contextHooks'
 
 const Login = () => {
 	const {
@@ -21,19 +20,17 @@ const Login = () => {
 	})
 	const { mutate: loginUser, isPending, isSuccess, data } = useLogin()
 	const { handleSetUser, handleIsLoggedIn } = useUserContext()
+	const { handleSetToken } = useAuthContext()
 	const navigate = useNavigate()
 
 	useEffect(() => {
 		if (isSuccess && !isPending) {
 			handleSetUser(data.user)
+			handleSetToken(data.token as string)
 			handleIsLoggedIn()
 			navigate('/app/my-portfolio', { replace: true })
 		}
-	}, [navigate, isSuccess, data?.user, handleSetUser, handleIsLoggedIn, isPending])
-
-	const handleGithubSignup = () => {
-		console.log('Github')
-	}
+	}, [navigate, isSuccess, data?.user, handleSetUser, handleIsLoggedIn, isPending, handleSetToken, data?.token])
 
 	return (
 		<div className='formContainer'>
@@ -41,13 +38,6 @@ const Login = () => {
 				<h1 className='mb-1'>Login to Account</h1>
 				<h6>Enter your credentials to access your account</h6>
 			</div>
-			<Button
-				onClick={handleGithubSignup}
-				buttonText='Sign In with Github'
-				buttonStyles='bg-darkBlue text-white'
-				icon={<BiLogoGithub className='h-6 w-6' />}
-			/>
-			<div className='borderWord'>or</div>
 
 			<form className='flex flex-col -mt-2.5 gap-4' onSubmit={handleSubmit((data) => loginUser(data))} autoComplete='on'>
 				<Text name='email' register={register} placeholder='Enter email' error={errors.email?.message} />
