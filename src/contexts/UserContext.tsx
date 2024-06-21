@@ -47,7 +47,7 @@ export const UserProvider: FC<{ children: ReactNode }> = ({ children }) => {
 	}
 	const removeAvatar = () => {
 		updateObjectFromStorage({ storageKey: 'user', objectKey: 'avatarURL', valueToUpdate: '' })
-		// setUser((user) => ({ ...user, avatarURL: '' }))
+		setUser((user) => ({ ...user, avatarURL: '' }))
 	}
 
 	const handleSetUser = (user: User) => {

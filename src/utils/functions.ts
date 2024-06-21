@@ -28,6 +28,7 @@ export const getValueFromStorage = <T>(key: string, initialValue: T) => {
 	if (!item) return initialValue
 
 	const data: T = item.startsWith('{') ? JSON.parse(item) : item
+
 	return data
 }
 
@@ -41,21 +42,6 @@ export const updateObjectFromStorage = (updateStorage: IUpdateStorage): void => 
 
 	convertedItem[updateStorage.objectKey] = updateStorage.valueToUpdate
 	window.localStorage.setItem(updateStorage.storageKey, JSON.stringify(convertedItem))
-}
-
-export const getImageFormat = (format: 'landscape' | 'cover', file: File) => {
-	return new Promise<boolean>((resolve) => {
-		const img = document.createElement('img')
-		img.onload = function () {
-			const aspectRatio = img.width / img.height
-
-			if (format === 'landscape' && aspectRatio > 1.5) resolve(false)
-			if (format === 'cover' && aspectRatio < 2.75) resolve(false)
-			resolve(true)
-		}
-
-		img.src = URL.createObjectURL(file)
-	})
 }
 
 export const createZodErrorMessage = (error: IDefaultError): string | null => {
@@ -129,7 +115,10 @@ export const createImage = (url: string): Promise<HTMLImageElement> =>
 		image.src = url
 	})
 
-export async function getCroppedImg(imageSrc: string | null, pixelCrop: Area | null): Promise<File | null> {
+export async function getCroppedImg(
+	imageSrc: string | null,
+	pixelCrop: Area | null
+): Promise<{ croppedFile: File; croppedUrl: string } | null> {
 	if (!imageSrc) return null
 	if (!pixelCrop) return null
 	const image = await createImage(imageSrc)
@@ -166,8 +155,9 @@ export async function getCroppedImg(imageSrc: string | null, pixelCrop: Area | n
 	return new Promise((resolve) => {
 		croppedCanvas.toBlob((canvasBlob) => {
 			if (!canvasBlob) return null
-			const croppedFile = new File([canvasBlob], 'coverFile', { lastModified: Date.now(), type: imageType })
-			resolve(croppedFile)
+			const croppedFile = new File([canvasBlob], 'croppedFile', { lastModified: Date.now(), type: imageType })
+			const croppedUrl = URL.createObjectURL(croppedFile)
+			resolve({ croppedFile, croppedUrl })
 		}, imageType)
 	})
 }

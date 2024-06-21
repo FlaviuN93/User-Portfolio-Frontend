@@ -1,3 +1,4 @@
+import React from 'react'
 import { Outlet } from 'react-router-dom'
 import useMediaQuery from '../../hooks/useMediaQuery'
 import LoginImage from '../UI/LoginImage'

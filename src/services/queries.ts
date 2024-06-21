@@ -8,7 +8,6 @@ import {
 	deleteMyCover,
 	deleteMyProject,
 	forgotPassword,
-	getMyProject,
 	getMyProjects,
 	getMyUserId,
 	getTechnologies,
@@ -74,13 +73,6 @@ export const useGetMyProjects = () =>
 	useQuery<Project[], IDefaultError>({
 		queryKey: ['myProjects'],
 		queryFn: getMyProjects,
-	})
-
-export const useGetMyProject = (projectId: number) =>
-	useQuery<Project, IDefaultError>({
-		queryKey: ['myProject', projectId],
-		queryFn: () => getMyProject(projectId),
-		enabled: !!projectId,
 	})
 
 export const useCreateMyProject = () =>
