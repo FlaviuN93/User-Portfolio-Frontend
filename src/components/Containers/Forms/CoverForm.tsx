@@ -49,7 +49,7 @@ const CoverForm = () => {
 		if (coverFile && isImageSelected) setCoverUrl(coverFile)
 	}, [getValues().coverFile, loggedUser.coverURL, isImageSelected])
 
-	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
+	const onCropComplete = (_: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
 
 	const submitCoverFile: SubmitHandler<{ coverFile: File | null }> = async (data) => {
 		if (!data.coverFile) {

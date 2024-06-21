@@ -1,3 +1,4 @@
+import React from 'react'
 import { CONSTANTS, addProjectImage } from '../../utils/variables'
 import Button from '../UI/Button'
 import { Divider } from '../UI/Dropdown'
@@ -38,7 +39,7 @@ const ProjectImage = <T extends FieldValues>({
 	const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null)
 	const isDisabled = !!errorMessage
 
-	const onCropComplete = (croppedArea: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
+	const onCropComplete = (_: Area, croppedAreaPixels: Area) => setCroppedAreaPixels(croppedAreaPixels)
 
 	const handleFileCrop = async () => {
 		setIsLoading(true)
