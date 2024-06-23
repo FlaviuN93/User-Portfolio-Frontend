@@ -10,7 +10,7 @@ import DarkModeToggle from '../Utilities/DarkModeToggle'
 
 const PageNav = () => {
 	const { user: loggedUser, handleLogoutUser } = useUserContext()
-	const { themeMode, clearDarkMode } = useDarkModeContext()
+	const { themeMode } = useDarkModeContext()
 	const { mutate: logout } = useLogout()
 
 	const showAccount = loggedUser.avatarURL && loggedUser.fullName && loggedUser.jobTitle
@@ -21,7 +21,6 @@ const PageNav = () => {
 
 	const handleLogout = async () => {
 		await handleLogoutUser()
-		clearDarkMode()
 		navigate('/', { replace: true })
 	}
 

@@ -5,7 +5,6 @@ interface DarkModeContextProps {
 	themeMode: 'light' | 'dark'
 	setLightMode: () => void
 	setDarkMode: () => void
-	clearDarkMode: () => void
 }
 
 export const DarkModeContext = createContext({} as DarkModeContextProps)
@@ -33,9 +32,5 @@ export const DarkModeProvider: FC<{ children: ReactNode }> = ({ children }) => {
 		setThemeMode('dark')
 	}
 
-	const clearDarkMode = () => {
-		window.localStorage.removeItem('themeMode')
-		setThemeMode('light')
-	}
-	return <DarkModeContext.Provider value={{ themeMode, setDarkMode, setLightMode, clearDarkMode }}>{children}</DarkModeContext.Provider>
+	return <DarkModeContext.Provider value={{ themeMode, setDarkMode, setLightMode }}>{children}</DarkModeContext.Provider>
 }
