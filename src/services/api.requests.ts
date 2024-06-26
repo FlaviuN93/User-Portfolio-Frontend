@@ -1,4 +1,4 @@
-import { remove, get, patch, post } from './baseHttp'
+import { remove, get, patch, post, put } from './baseHttp'
 import { IAvatar, ICover, IDefaultSuccess, IRegisteredUser, IUser, MessageUs, Project, Technology, User } from './types'
 import { IProfileSettings, LoginType, ResetPasswordType, SignupType } from '../utils/schemas'
 
@@ -24,7 +24,7 @@ export const getMyProjects = () => get<Project[]>('/projects/currentUser')
 export const createMyProject = (body: FormData) => post<IDefaultSuccess, FormData>('projects/currentUser', { body })
 
 export const updateMyProject = (projectId: number, body: FormData) =>
-	patch<IDefaultSuccess, FormData>(`projects/currentUser/${projectId}`, {
+	put<IDefaultSuccess, FormData>(`projects/currentUser/${projectId}`, {
 		body,
 	})
 
